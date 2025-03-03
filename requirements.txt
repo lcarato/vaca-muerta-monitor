@@ -1,0 +1,60 @@
+# Core
+numpy==1.24.3
+pandas==2.0.3
+scipy==1.10.1
+matplotlib==3.7.2
+pyyaml==6.0.1
+python-dotenv==1.0.0
+requests==2.31.0
+joblib==1.3.2
+
+# Geospatial
+geopandas==0.13.2
+rasterio==1.3.8
+shapely==2.0.1
+pyproj==3.6.0
+sentinelhub==3.8.6
+sentinelsat==1.2.1
+folium==0.14.0
+geopy==2.3.0
+gdal==3.6.4
+
+# Machine Learning
+scikit-learn==1.3.0
+tensorflow==2.13.0
+opencv-python==4.8.0.76
+scikit-image==0.21.0
+
+# Database
+sqlalchemy==2.0.20
+geoalchemy2==0.14.0
+psycopg2-binary==2.9.7
+
+# API and Web
+fastapi==0.101.1
+uvicorn==0.23.2
+jinja2==3.1.2
+
+# Social Media
+tweepy==4.14.0
+
+# Emissions Analysis
+pycrs==1.0.2
+satpy==0.40.0
+netCDF4==1.6.4
+xarray==2023.7.0
+tropomi-tools==0.1.0
+
+# Logging and Monitoring
+loguru==0.7.0
+tqdm==4.66.1
+
+# Localization
+babel==2.12.1
+polib==1.2.0
+
+# Development tools
+pytest==7.4.0
+black==23.7.0
+flake8==6.1.0
+isort==5.12.0
