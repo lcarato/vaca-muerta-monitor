@@ -1,0 +1,123 @@
+# Vaca Muerta Monitoring System Configuration
+
+# General Configuration
+general:
+  project_name: "Vaca Muerta Monitor"
+  default_language: "es"  # Options: en, es, pt
+  log_level: "INFO"
+  data_directory: "./data"
+  models_directory: "./models"
+  
+# Area of Interest for Vaca Muerta Basin
+area_of_interest:
+  # Bounding box for the Vaca Muerta formation in Neuquén province
+  bbox:
+    min_lon: -70.5
+    min_lat: -39.5
+    max_lon: -68.0
+    max_lat: -37.0
+  # Optional more precise polygon in GeoJSON format
+  geojson_path: "./data/vaca_muerta_polygon.geojson"
+
+# Sentinel Satellite Configuration
+sentinel:
+  # Sentinel Hub credentials will be loaded from .env file
+  instance_id_env_var: "SENTINEL_HUB_INSTANCE_ID"
+  
+  # Data collection parameters
+  collections:
+    - name: "SENTINEL-2-L2A"  # Multispectral imagery
+      max_cloud_coverage: 20
+      temporal_resolution: 5  # days
+      bands: ["B02", "B03", "B04", "B08", "B11", "B12"]
+      
+    - name: "SENTINEL-1-GRD"  # Synthetic Aperture Radar
+      polarization: "VV,VH"
+      orbit_direction: "BOTH"
+      temporal_resolution: 6  # days
+  
+  # Time interval for data collection
+  time_interval:
+    start_date: "2020-01-01"  # Can be overridden with command line
+    end_date: "now"           # "now" means current date
+    
+  # Processing settings
+  processing:
+    resolution: 10  # meters per pixel
+    tile_size: 1024 # pixels
+    tile_overlap: 128 # pixels
+    
+# Detection Configuration
+detection:
+  # Well pad detection parameters
+  well_pad:
+    model_path: "./models/wellpad_detector_v1.h5"
+    confidence_threshold: 0.75
+    min_size: 5000  # square meters
+    max_size: 100000  # square meters
+    
+  # Individual well detection
+  well:
+    detection_method: "template_matching"  # Options: template_matching, cnn
+    template_directory: "./data/templates/"
+    confidence_threshold: 0.8
+    
+  # Change detection
+  change_detection:
+    method: "image_differencing"  # Options: image_differencing, deep_learning
+    threshold: 0.15
+    minimum_change_area: 2000  # square meters
+    
+  # Validation with government data
+  validation:
+    max_distance: 100  # meters, for matching detected wells with official records
+    
+# Methane Emissions Analysis
+methane:
+  enabled: true
+  
+  # Data collection
+  collection: "SENTINEL-5P"
+  product: "L2__CH4___"
+  min_quality: 0.5
+  
+  # Analysis parameters
+  analysis:
+    background_window: 50  # km
+    detection_threshold: 0.15  # fraction above background
+    temporal_aggregation: "weekly"  # Options: daily, weekly, monthly
+    
+# Data Integration
+data_integration:
+  # Official data sources
+  official_wells_url: "http://datos.energia.gob.ar/datastore/odata3.0/cb5c0f04-7835-45cd-b982-3e25ca7d7751"
+  concessions_url: "http://datos.energia.gob.ar/datastore/odata3.0/b6af0c0e-e463-4cb7-b458-373aafc0ac08"
+  
+  # Update frequency
+  update_frequency: "weekly"  # Options: daily, weekly, monthly
+  
+  # Database settings
+  database:
+    type: "postgresql"  # Options: sqlite, postgresql
+    # Connection parameters will be loaded from .env file
+    
+# Visualization Configuration
+visualization:
+  basemap: "OpenStreetMap"  # Options: OpenStreetMap, ESRI, Stamen
+  colors:
+    well_pad: "#FF5733"
+    well: "#C70039"
+    new_detection: "#FFC300"
+    concession: "rgba(0, 123, 255, 0.3)"
+    high_methane: "rgba(255, 0, 0, 0.5)"
+  output_directory: "./data/maps/"
+  
+# Social Media Configuration
+social:
+  enabled: true
+  platforms:
+    twitter:
+      # API credentials will be loaded from .env file
+      post_frequency: "daily"  # Options: daily, weekly, on_detection
+      include_map: true
+      hashtags: ["#VacaMuerta", "#ShaleMonitoring", "#SatelliteDetection"]
